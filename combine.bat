@@ -1,0 +1,1 @@
+java -jar RomMangler.jar combine sf2eb_split.cfg build/sf2.bin

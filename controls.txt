@@ -1,0 +1,36 @@
+Object:
+0 - Switch between long lists every frame
+1 - Switch between short lists
+2 - Do not update base register
+
+Rowscroll & Scroll 2/3:
+0 - Switch between data every frame with base reg, layer/video control = 1/1
+1 - Do not update base reg, layer/video control = 1/1
+2 - Switch between data every frame with base reg, layer/video control = 1/0
+3 - Do not update base reg, layer/video control = 1/0
+4 - Switch between data every frame with base reg, layer/video control = 0/1
+5 - Do not update base reg, layer/video control = 0/1
+6 - Switch between data every frame with base reg, layer/video control = 0/0
+7 - Do not update base reg, layer/video control = 0/0
+
+Palettes:
+0 - $3f sent to palette control, all pages, base pal reg updated
+1 - $01 sent to palette control, page 0 sprites, base pal reg updated
+2 - $02 sent to palette control, page 1 scroll1, base pal reg updated
+3 - $04 sent to palette control, page 2 scroll2, base pal reg updated
+4 - $08 sent to palette control, page 3 scroll3, base pal reg updated
+5 - $10 sent to palette control, page 4 stars1, base pal reg updated
+6 - $20 sent to palette control, page 5 stars2, base pal reg updated
+7 - $15 sent to palette control, stars1/sprites/scroll2, base pal reg updated
+8 - $2A sent to palette control, stars2/scroll3/scroll1, base pal reg updated
+9 - Nothing sent to palette control or base reg
+
+Control Regs (B3):
+0 - Default, layer control unknown bits off, video control on
+1 - layer control unknown 1/2 on/off, video control on
+2 - layer control unknown 2/2 off/on, video control on
+3 - layer control unknown bits off, video control 1/2/3 off/on/on
+4 - layer control unknown bits off, video control 1/2/3 on/off/on
+5 - layer control unknown bits off, video control 1/2/3 on/on/off
+6 - layer controll scroll1 enable off, unknown bits off, video control on
+
