@@ -52,7 +52,7 @@ base_reg_scroll2 = $800104
 base_reg_scroll3 = $800106
 base_reg_rowscroll = $800108
 base_reg_palette = $80010a
-base_reg_pal_control = $80014a
+base_reg_pal_control = $800170
 ; Vram constants
 
 ; Inputs
@@ -127,6 +127,16 @@ menu_item_count = $06
    
  org $8D1
 ;  dc.b "123  "
+
+ ; Ignore cps b id check.   
+ org $0004D0
+   nop
+   nop
+ 
+ ; Do not add $4000 to scroll 1 text tiles
+ org $000728
+   nop
+   nop
    
  org $000A54
   jmp main
@@ -153,10 +163,10 @@ menu_item_count = $06
 ;-------------------
 hijack_vsync:
   ; From 000A9C
-  move.w  $800148.l, ($5e,A5)
+  move.w  $800172.l, ($5e,A5)
 
   move.w  ($4c,A5), $800122.l ; Video control
-  jsr $001BC4 ; Input and update video control, skip video control
+  jsr $001684 ; Input and update video control, skip video control
   ; From 000A9C  
  
   move.l #$7fffffff, D7
