@@ -137,9 +137,18 @@ menu_item_count = $06
  org $000728
    nop
    nop
+
+ org $000774
+   move.w  #$20, D0
    
  org $000A54
   jmp main
+
+ org $0016D6
+  move.b  $804001.l, D0
+
+ org $0016E2
+  move.b  $804000.l, D0
 
  ; Don't fade out test screen 
  org $000984
