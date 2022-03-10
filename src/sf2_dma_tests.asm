@@ -128,7 +128,7 @@ menu_item_count = $06
  org $8D1
 ;  dc.b "123  "
    
- org $000A30
+ org $000A54
   jmp main
 
  ; Don't fade out test screen 
@@ -141,7 +141,7 @@ menu_item_count = $06
  
 ;-------------------
 ; Stop vsync handling after inputs are read and palette updated and do custom logic
- org $000A9C
+ org $000AC0
   jmp hijack_vsync
 ;-------------------
 
@@ -1137,19 +1137,19 @@ nibble_to_char:
   dc.b "0123456789ABCDEF"
 
 sf2_objects:
-  incbin "sf2_objects_1.bin"
+  incbin "bin\sf2_objects_1.bin"
  
 sf2_objects_2:
-  incbin "sf2_objects_2.bin"
+  incbin "bin\sf2_objects_2.bin"
  
 sf2_scroll2:
-  incbin "scroll2_vega_dup.bin"
+  incbin "bin\scroll2_vega_dup.bin"
   
 sf2_scroll3:
-  incbin "scroll3_vega_dup.bin"
+  incbin "bin\scroll3_vega_dup.bin"
   
 sf2_palettes:
-  incbin "palettes_vegastage.bin"
+  incbin "bin\palettes_vegastage.bin"
   
 sf2_rowscroll:
-  incbin "sf2_rowscroll.bin"
+  incbin "bin\sf2_rowscroll.bin"
