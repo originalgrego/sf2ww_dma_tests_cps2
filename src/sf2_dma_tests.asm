@@ -114,7 +114,7 @@ layer_control_unknown_2_off = $FFDF
 ; UU UU OO OO   S1 S1 S2 S2   S3 S3 SF2 S2E   S1E SF1 S3E RS    
 ; 0  0  0  0    1  1  1  0    1  0  0   1     1   0   1   1
 
-default_layer_control = $079B
+default_layer_control = $0B4E
 ;-----------------
 
 rowscroll_on = $0001
@@ -220,7 +220,7 @@ hijack_vsync:
   move.w D0, (A0)
   
   movea.l #base_vram_scroll2_var, A0
-  eori.w  #$0040, (A0) ; Switch object buffers each frame
+  eori.w  #$0100, (A0) ; Switch object buffers each frame
   ; Update scroll2 base
 
   ; Update scroll3 base
@@ -229,7 +229,7 @@ hijack_vsync:
   move.w D0, (A0)
   
   movea.l #base_vram_scroll3_var, A0
-  eori.w  #$0040, (A0) ; Switch object buffers each frame
+  eori.w  #$0100, (A0) ; Switch object buffers each frame
   ; Update scroll3 base
   
   movem.l (A7)+, D0-D7/A0-A6 ; Restore regs
@@ -1050,7 +1050,10 @@ palette_brightness_loop:
 ;-------------------
 
 ;-------------------
+; TODO FIX ME
 upload_object_data:
+  rts ; TODO - Deal with CPS2 sprites
+  
   moveq #$0, D0
   move.w #$4f0, D0
   movea.l #$00910000, A0
@@ -1071,7 +1074,7 @@ upload_object_data:
   movea.l #$00918000, A0
   movea.l #sf2_objects, A1
   
-  bsr copy_mem
+  bsr copy_mem 
 
   move.w #$104, D0
   movea.l #$0091C000, A0
@@ -1085,17 +1088,31 @@ upload_object_data:
 ;-----------------
 
 upload_scroll23_data:
-  move.w #$2000, D0
+  move.w #$4000, D0
   movea.l #$00904000, A0
   movea.l #sf2_scroll2, A1
   
   bsr copy_mem
+
+  move.l #$20000000, D1  
+  move.l D1, D2  
+  move.w #$FFF, D0
+  movea.l #$00914000, A0
+
+  bsr clear_mem
   
-  move.w #$2000, D0
+  move.w #$4000, D0
   movea.l #$00908000, A0
   movea.l #sf2_scroll3, A1
   
   bsr copy_mem
+
+  move.l #$56000000, D1  
+  move.l D1, D2  
+  move.w #$FFF, D0
+  movea.l #$00918000, A0
+
+  bsr clear_mem
 
   move.w #$1000, D0
   movea.l #$00900000, A0
@@ -1104,9 +1121,9 @@ upload_scroll23_data:
   bsr copy_mem
   
   ; Position scroll layers and enable them
-  move.l #$01c00200, (scroll_2_pos_offset, A5)
-  move.l #$03000400, (scroll_3_pos_offset, A5)
-  move.w #default_layer_control, (layer_control_offset, A5) ; Vega stage settings + untested rowscroll bit
+  move.l #$01c00000, (scroll_2_pos_offset, A5)
+  move.l #$03000010, (scroll_3_pos_offset, A5)
+  move.w #default_layer_control, (layer_control_offset, A5) ; Thawk stage settings + untested rowscroll bit
   
   rts
 
@@ -1120,6 +1137,14 @@ upload_rowscroll_data:
   movea.l #sf2_rowscroll, A1
   
   bsr copy_mem
+  rts
+;-----------------
+
+;-----------------
+clear_mem:
+  move.l  D1, (A0)+
+  move.l  D2, (A0)+
+  dbra D0, clear_mem
   rts
 ;-----------------
 
@@ -1162,13 +1187,13 @@ sf2_objects_2:
   incbin "bin\sf2_objects_2.bin"
  
 sf2_scroll2:
-  incbin "bin\scroll2_vega_dup.bin"
+  incbin "bin\scroll2_thawk.bin"
   
 sf2_scroll3:
-  incbin "bin\scroll3_vega_dup.bin"
+  incbin "bin\scroll3_thawk.bin"
   
 sf2_palettes:
-  incbin "bin\palettes_vegastage.bin"
+  incbin "bin\palettes_thawk.bin"
   
 sf2_rowscroll:
   incbin "bin\sf2_rowscroll.bin"
