@@ -103,18 +103,18 @@ layer_control_scroll_2_off = $FFFB
 layer_control_scroll_3_on = $0008
 layer_control_scroll_3_off = $FFF7
 
-layer_control_unknown_1_on = $0004
-layer_control_unknown_1_off = $FFFB
+layer_control_unknown_1_on = $0010
+layer_control_unknown_1_off = $FFEF
 layer_control_unknown_2_on = $0020
 layer_control_unknown_2_off = $FFDF
 
 ;-----------------
 ; Layer control
 ;
-; UU UU OO OO   S1 S1 S2 S2   S3 S3 SF2 S2E   S1E SF1 S3E RS    
-; 0  0  0  0    1  1  1  0    1  0  0   1     1   0   1   1
+; UU UU OO OO   S1 S1 S2 S2   S3 S3 SF2 SF1   S3E S2E S1E RS 
+; 0  0  0  0    0  1  1  0    1  1  0   0     1   1   1   1
 
-default_layer_control = $079F
+default_layer_control = $06CF
 ;-----------------
 
 rowscroll_on = $0001
