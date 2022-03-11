@@ -96,12 +96,12 @@ video_control_unknown_3_off = $FFDF
 
 layer_control_offset = $52
 
-layer_control_scroll_1_on = $0008
-layer_control_scroll_1_off = $FFF7
-layer_control_scroll_2_on = $0010
-layer_control_scroll_2_off = $FFEF
-layer_control_scroll_3_on = $0002
-layer_control_scroll_3_off = $FFFD
+layer_control_scroll_1_on = $0002
+layer_control_scroll_1_off = $FFFD
+layer_control_scroll_2_on = $0004
+layer_control_scroll_2_off = $FFFB
+layer_control_scroll_3_on = $0008
+layer_control_scroll_3_off = $FFF7
 
 layer_control_unknown_1_on = $0004
 layer_control_unknown_1_off = $FFFB
