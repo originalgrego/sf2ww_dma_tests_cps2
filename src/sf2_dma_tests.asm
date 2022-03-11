@@ -114,7 +114,7 @@ layer_control_unknown_2_off = $FFDF
 ; UU UU OO OO   S1 S1 S2 S2   S3 S3 SF2 S2E   S1E SF1 S3E RS    
 ; 0  0  0  0    1  1  1  0    1  0  0   1     1   0   1   1
 
-default_layer_control = $0B4E
+default_layer_control = $079F
 ;-----------------
 
 rowscroll_on = $0001
