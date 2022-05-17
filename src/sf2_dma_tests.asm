@@ -36,6 +36,8 @@ base_reg_scroll3_ptr = $ff84B0
 base_reg_rowscroll_ptr = $ff84B4
 base_reg_palette_ptr = $ff84B8
 base_reg_pal_control_ptr = $ff84BC
+
+cps2_object_buffer_bit = $500
 ; Vars
 
 ; Vram constants
@@ -164,20 +166,95 @@ menu_item_count = $06
   jmp hijack_vsync
 ;-------------------
 
+ org $00040E
+  jmp hijack_reset_vec
+
+ org $000934
+  jmp hijack_load_stack
+
+ ; Ignore dips
+ org $00170E
+   NOP
+   NOP
+   NOP
+
+ org $00171A
+   NOP
+   NOP
+   NOP
+
+ org $001726
+   NOP
+   NOP
+   NOP
+ ; Ignore dips
+
+ ; Ignore coin control 
+ org $00168C
+   NOP
+   NOP
+   NOP
+   NOP
+
+ org $0016BE
+   NOP
+   NOP
+   NOP
+
+ org $000998
+  bra $9ac
+
+ org $00042E
+   NOP
+   NOP
+   NOP
+   NOP
+
 ;=================================
 ; Free space
 ;=================================
  org $0E0000
 
+hijack_load_stack:
+  lea     $ffffe0.l, A7
+  lea     $ff8000.l, A5
+  jmp $00093C
+
+hijack_reset_vec:
+  ; Configure cps2  
+  move.w  #$7000, $FFFFF0.l ; /* Unknown (not base address of objects). Could be bass address of bank used when object swap bit set? */
+
+  move.w  #$0, $8040a0.l ; Unknown in mame
+
+  move.w  #$807d, $FFFFF2.l
+  move.w  #$4570, $FFFFF4.l
+  move.w  #$0, $FFFFF6.l
+  move.w  #$40, $FFFFF8.l
+  move.w  #$10, $FFFFFa.l
+
+  move.w  #$f00, $804040.l ; Eeprom
+  ; Configure cps2
+  
+  jmp $00041E
+
 ;-------------------
 hijack_vsync:
-  ; From 000A9C
+
+  move.w  (cps2_object_buffer_bit, A5), $8040e0.l ; Set object bank after vblank - bit 0 = Object ram bank swap
+  eori.w #$1, (cps2_object_buffer_bit, A5)
+
+  ; From 000AD0
   move.w  $800172.l, ($5e,A5)
 
   move.w  ($4c,A5), $800122.l ; Video control
   jsr $001684 ; Input and update video control, skip video control
-  ; From 000A9C  
- 
+  ; From 000AD0  
+
+  move.w  #$7000, $FFFFF0.l
+  move.w  #$40, $FFFFF8.l
+  move.w  #$10, $FFFFFa.l   
+  move.w  #$4570, $FFFFF4.l
+
   move.l #$7fffffff, D7
   sub.l D6, D7
   move.l D7, (loop_count, A5) ; Store loop count
@@ -1052,37 +1129,23 @@ palette_brightness_loop:
 ;-------------------
 ; TODO FIX ME
 upload_object_data:
-  rts ; TODO - Deal with CPS2 sprites
-  
-  moveq #$0, D0
-  move.w #$4f0, D0
-  movea.l #$00910000, A0
-  movea.l #sf2_objects_2, A1
-  
-  bsr copy_mem
+  move.w  #$0, $8040e0.l ; Set object bank
 
   moveq #$0, D0
-  move.w #$104, D0
-  movea.l #$00914000, A0
-  movea.l #sf2_objects_2, A1
+  move.w #$2000, D0
+  movea.l #$708000, A0
+  movea.l #ssf2xj_objects, A1
   
   bsr copy_mem
 
-  move.b #$FF, (end_short_object_offset, A0)
+  move.w  #$1, $8040e0.l ; Set object bank
 
-  move.w #$4f0, D0
-  movea.l #$00918000, A0
-  movea.l #sf2_objects, A1
-  
-  bsr copy_mem 
-
-  move.w #$104, D0
-  movea.l #$0091C000, A0
-  movea.l #sf2_objects, A1
+  moveq #$0, D0
+  move.w #$2000, D0
+  movea.l #$708000, A0
+  movea.l #ssf2xj_objects, A1
   
   bsr copy_mem
-  
-  move.b #$FF, (end_short_object_offset, A0)
 
   rts
 ;-----------------
@@ -1180,8 +1243,8 @@ default_count_string:
 nibble_to_char:
   dc.b "0123456789ABCDEF"
 
-sf2_objects:
-  incbin "bin\sf2_objects_1.bin"
+ssf2xj_objects:
+  incbin "bin\ssf2xj_obj_1.bin"
  
 sf2_objects_2:
   incbin "bin\sf2_objects_2.bin"
