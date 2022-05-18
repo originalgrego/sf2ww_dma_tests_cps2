@@ -48,13 +48,13 @@ base_vram_scroll3 = $9080
 base_vram_rowscroll = $9200
 base_vram_palette = $9000
 
-base_reg_object = $800100
-base_reg_scroll1 = $800102
-base_reg_scroll2 = $800104
-base_reg_scroll3 = $800106
-base_reg_rowscroll = $800108
-base_reg_palette = $80010a
-base_reg_pal_control = $800170
+base_reg_object = $804100
+base_reg_scroll1 = $804102
+base_reg_scroll2 = $804104
+base_reg_scroll3 = $804106
+base_reg_rowscroll = $804108
+base_reg_palette = $80410a
+base_reg_pal_control = $804170
 ; Vram constants
 
 ; Inputs
@@ -166,8 +166,8 @@ menu_item_count = $06
   jmp hijack_vsync
 ;-------------------
 
- org $00040E
-  jmp hijack_reset_vec
+ org $000004
+   dc.l hijack_reset_vec
 
  org $000934
   jmp hijack_load_stack
@@ -205,10 +205,23 @@ menu_item_count = $06
   bra $9ac
 
  org $00042E
-   NOP
-   NOP
-   NOP
-   NOP
+  NOP
+  NOP
+  NOP
+  NOP
+  move.w  #$ffc0, $80410c.l
+  move.w  #$0, $80410e.l
+  move.w  #$9100, $804100.l ; Object ram base
+  move.w  #$90c0, $804102.l ; Scroll1 ram base
+  move.w  #$9040, $804104.l ; Scroll2 ram base
+  move.w  #$9080, $804106.l ; Scroll3 ram base
+  move.w  #$9200, $804108.l ; Rowscroll  ram base
+
+ org $00048E
+  move.w  #$12c8, $804166.l ; Ctrl
+  move.w  #$3e, $804122.l
+  move.w  #$3f, $804170.l ; Pal Control
+  move.w  #$9000, $80410a.l ; Palette base
 
 ;=================================
 ; Free space
