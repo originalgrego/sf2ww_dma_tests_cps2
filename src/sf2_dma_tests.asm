@@ -202,8 +202,8 @@ menu_item_count = $06
   NOP
   NOP
   NOP
-  move.w  #$ffc0, $80410c.l
-  move.w  #$0, $80410e.l
+  move.w  #$ffc0, $80410c.l ; Scroll x
+  move.w  #$0, $80410e.l ; Scroll y
   move.w  #$9100, $804100.l ; Object ram base
   move.w  #$90c0, $804102.l ; Scroll1 ram base
   move.w  #$9040, $804104.l ; Scroll2 ram base
@@ -211,8 +211,8 @@ menu_item_count = $06
   move.w  #$9200, $804108.l ; Rowscroll  ram base
 
  org $00048E
-  move.w  #$12c8, $804166.l ; Ctrl
-  move.w  #$3e, $804122.l
+  move.w  #$12c8, $804166.l ; Layer ctrl
+  move.w  #$3e, $804122.l ; Vid ctrl
   move.w  #$3f, $804170.l ; Pal Control
   move.w  #$9000, $80410a.l ; Palette base
 
@@ -233,7 +233,7 @@ menu_item_count = $06
 
  org $00167E
   move.w  D0, $804122.l ; Video control
-  move.w  ($52,A5), $804166.l
+  move.w  ($52,A5), $804166.l ; Layer control
   ; Ignore coin control 
   NOP
   NOP
@@ -391,7 +391,7 @@ hijack_vsync:
 ;-------------------
 hijack_clear_ram
   lea     $ff0000.l, A0 
-  move.w  #$1fff, D4
+  move.w  #$1ffd, D4
   moveq   #$0, D0
 
 .clear_ram_loop
