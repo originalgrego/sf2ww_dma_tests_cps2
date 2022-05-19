@@ -223,6 +223,25 @@ menu_item_count = $06
   move.w  #$3f, $804170.l ; Pal Control
   move.w  #$9000, $80410a.l ; Palette base
 
+ org $0005FE
+  move.w  #$3f, $804122.l
+
+ org $00061E
+  move.w  #$9100, $804100.l ; Object ram base
+  move.w  #$9100, ($2a,A5)
+  move.w  #$90c0, $804102.l ; Scroll1 ram base
+  move.w  #$90c0, ($2c,A5)
+  move.w  #$9040, $804104.l ; Scroll2 ram base
+  move.w  #$9040, ($2e,A5)
+  move.w  #$9080, $804106.l ; Scroll3 ram base
+  move.w  #$9080, ($30,A5)
+  move.w  #$9200, $804108.l ; Rowscroll ram base
+  move.w  #$9200, ($32,A5)
+
+
+ org $0005CC
+  adda.l  #$ffee, A1
+
 ;=================================
 ; Free space
 ;=================================

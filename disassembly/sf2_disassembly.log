@@ -60,7 +60,7 @@
 0004F4  adda.l  #$3ffe, A1
 0004FA  lea     ($37b,PC) ; ($877), A2
 0004FE  lea     ($6,PC) ; ($506), A6
-000502  bra     $6ca
+000502  bra     $6ca ; Run test
 
 000506  lea     ($37a,PC) ; ($882), A2
 00050A  lea     ($6,PC) ; ($512), A5
@@ -378,7 +378,7 @@
 000A28  jsr     $b44.w
 000A2C  move    #$2000, SR ; Set supervisor state, 0 interrupt priority mask
 
-;
+; Entity Loop
 000A30  clr.b   (-$7df2,A5)
 000A34  lea     (-$8000,A5), A0
 000A38  move.w  #$f, D0
@@ -395,9 +395,10 @@
 
 000A50  move    #$2000, SR ; Set supervisor state, 0 interrupt priority mask
 
-000A54  lea     ($20,A0), A0
+000A54  lea     ($20,A0), A0 ; Loop through entities
 000A58  dbra    D0, $a3c
-000A5C  bra     $a30
+
+000A5C  bra     $a30 ; Loop
 
 000A5E  pea     (-$10,PC) ; ($a50)
 000A62  move.w  D0, -(A7)
