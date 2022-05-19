@@ -189,13 +189,6 @@ menu_item_count = $06
    NOP
  ; Ignore dips
 
- ; Ignore coin control 
- org $00168C
-   NOP
-   NOP
-   NOP
-   NOP
-
  org $0016BE
    NOP
    NOP
@@ -224,7 +217,7 @@ menu_item_count = $06
   move.w  #$9000, $80410a.l ; Palette base
 
  org $0005FE
-  move.w  #$3f, $804122.l
+  move.w  #$3f, $804122.l ; Video control
 
  org $00061E
   move.w  #$9100, $804100.l ; Object ram base
@@ -238,7 +231,54 @@ menu_item_count = $06
   move.w  #$9200, $804108.l ; Rowscroll ram base
   move.w  #$9200, ($32,A5)
 
+ org $00167E
+  move.w  D0, $804122.l ; Video control
+  move.w  ($52,A5), $804166.l
+  ; Ignore coin control 
+  NOP
+  NOP
+  NOP
+  NOP
+  ; Ignore coin control 
+  move.w  ($54,A5), $804168.l
+  move.w  ($56,A5), $80416a.l
+  move.w  ($58,A5), $80416c.l
+  move.w  ($5a,A5), $80416e.l
 
+ org $00173A
+  move.w  ($60,A5), $80410c.l
+
+ org $00174C
+  move.w  ($64,A5), $804110.l
+
+ org $00175E
+  move.w  ($68,A5), $804114.l
+
+ org $001770
+  move.w  ($6c,A5), $804118.l
+
+ org $00178E
+  move.w  ($70,A5), $80411c.l
+
+ org $0017AC
+  move.w  ($62,A5), $80410e.l
+
+ org $0017C0
+  move.w  ($66,A5), $804112.l
+
+ org $0017D4
+  move.w  ($6a,A5), $804116.l
+
+ org $0017E8
+  move.w  ($74,A5), $804120.l
+
+ org $0017FC
+  move.w  ($6e,A5), $80411a.l
+
+ org $001816
+  move.w  ($72,A5), $80411e.l
+ 
+ ; Clear less work ram
  org $0005CC
   adda.l  #$ffee, A1
 
@@ -276,9 +316,9 @@ hijack_vsync:
   eori.w #$1, (cps2_object_buffer_bit, A5)
 
   ; From 000AD0
-  move.w  $800172.l, ($5e,A5)
+  move.w  $800172.l, ($5e,A5) ; Get system id
 
-  move.w  ($4c,A5), $800122.l ; Video control
+  move.w  ($4c,A5), $804122.l ; Video control
   jsr $001684 ; Input and update video control, skip video control
   ; From 000AD0  
 
@@ -364,6 +404,7 @@ hijack_clear_ram
 
 ;-------------------
 main:
+  bsr init_qsound
   bsr fix_palette_brightness
   bsr upload_object_data
   bsr upload_rowscroll_data
@@ -1133,6 +1174,15 @@ draw_string_hook:
 
 .draw_string_hook_continue
   movea.l #$ffff8000, A5 
+
+  rts
+;-------------------
+
+;-------------------
+init_qsound:
+  move.b  #$88, $619ffb.l
+  move.b  #$0, $619ffd.l
+  move.b  #$ff, $619fff.l
 
   rts
 ;-------------------

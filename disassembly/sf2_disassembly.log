@@ -42,7 +42,7 @@
 
 0004BA  move.w  #$4000, D0
 0004BE  dbra    D0, $4be
-0004C2  move.w  $800172.l, D0
+0004C2  move.w  $800172.l, D0 ; CPS b id
 0004C8  andi.w  #$fc3f, D0
 0004CC  cmpi.w  #$401, D0
 0004D0  bne     $6f0
@@ -790,7 +790,7 @@
 001678  lsl.w   #8, D0
 00167A  or.w    ($4c,A5), D0
 
-00167E  move.w  D0, $800122.l
+00167E  move.w  D0, $800122.l ; Video control
 001684  move.w  ($52,A5), $800166.l
 00168C  move.b  ($2db,A5), $800030.l
 001694  move.w  ($54,A5), $800168.l
