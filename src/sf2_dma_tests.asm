@@ -125,7 +125,7 @@ rowscroll_off = $FFFE
 menu_item_count = $06
 
  org  0
-  incbin "build\sf2.bin"
+  incbin "build\ssf2xj.bin"
    
  org $8D1
 ;  dc.b "123  "
@@ -144,7 +144,7 @@ menu_item_count = $06
    move.w  #$20, D0
    
  org $000A54
-  jmp main
+;  jmp main
 
  org $0016D6
   move.b  $804001.l, D0
@@ -158,19 +158,19 @@ menu_item_count = $06
 ;   NOP
  
  org $000752
-   jmp hijack_clear_ram
+;   jmp hijack_clear_ram
  
 ;-------------------
 ; Stop vsync handling after inputs are read and palette updated and do custom logic
  org $000AC0
-  jmp hijack_vsync
+;  jmp hijack_vsync
 ;-------------------
 
  org $000004
-   dc.l hijack_reset_vec
+;   dc.l hijack_reset_vec
 
  org $000934
-  jmp hijack_load_stack
+;  jmp hijack_load_stack
 
  ; Ignore dips
  org $00170E
