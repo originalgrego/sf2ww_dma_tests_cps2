@@ -126,44 +126,17 @@ menu_item_count = $06
 
  org  0
   incbin "build\ssf2xj.bin"
-   
- org $8D1
-;  dc.b "123  "
-
- ; Ignore cps b id check.   
- org $0004D0
-   nop
-   nop
- 
- ; Do not add $4000 to scroll 1 text tiles
- org $000728
-   nop
-   nop
-
- org $000774
-   move.w  #$20, D0
-   
- org $000A54
-;  jmp main
-
- org $0016D6
-  move.b  $804001.l, D0
-
- org $0016E2
-  move.b  $804000.l, D0
-
- ; Don't fade out test screen 
- org $000984
-;   NOP
-;   NOP
+      
+ org $000250
+  jmp main
  
  org $000752
 ;   jmp hijack_clear_ram
  
 ;-------------------
 ; Stop vsync handling after inputs are read and palette updated and do custom logic
- org $000AC0
-;  jmp hijack_vsync
+ org $00197C
+  jmp hijack_vsync
 ;-------------------
 
  org $000004
@@ -172,120 +145,11 @@ menu_item_count = $06
  org $000934
 ;  jmp hijack_load_stack
 
- ; Ignore dips
- org $00170E
-   NOP
-   NOP
-   NOP
-
- org $00171A
-   NOP
-   NOP
-   NOP
-
- org $001726
-   NOP
-   NOP
-   NOP
- ; Ignore dips
-
- org $0016BE
-   NOP
-   NOP
-   NOP
-
- org $000998
-  bra $9ac
-
- org $00042E
-  NOP
-  NOP
-  NOP
-  NOP
-  move.w  #$ffc0, $80410c.l ; Scroll x
-  move.w  #$0, $80410e.l ; Scroll y
-  move.w  #$9100, $804100.l ; Object ram base
-  move.w  #$90c0, $804102.l ; Scroll1 ram base
-  move.w  #$9040, $804104.l ; Scroll2 ram base
-  move.w  #$9080, $804106.l ; Scroll3 ram base
-  move.w  #$9200, $804108.l ; Rowscroll  ram base
-
- org $00048E
-  move.w  #$12c8, $804166.l ; Layer ctrl
-  move.w  #$3e, $804122.l ; Vid ctrl
-  move.w  #$3f, $804170.l ; Pal Control
-  move.w  #$9000, $80410a.l ; Palette base
-
- org $0005FE
-  move.w  #$3f, $804122.l ; Video control
-
- org $00061E
-  move.w  #$9100, $804100.l ; Object ram base
-  move.w  #$9100, ($2a,A5)
-  move.w  #$90c0, $804102.l ; Scroll1 ram base
-  move.w  #$90c0, ($2c,A5)
-  move.w  #$9040, $804104.l ; Scroll2 ram base
-  move.w  #$9040, ($2e,A5)
-  move.w  #$9080, $804106.l ; Scroll3 ram base
-  move.w  #$9080, ($30,A5)
-  move.w  #$9200, $804108.l ; Rowscroll ram base
-  move.w  #$9200, ($32,A5)
-
- org $00167E
-  move.w  D0, $804122.l ; Video control
-  move.w  ($52,A5), $804166.l ; Layer control
-  ; Ignore coin control 
-  NOP
-  NOP
-  NOP
-  NOP
-  ; Ignore coin control 
-  move.w  ($54,A5), $804168.l
-  move.w  ($56,A5), $80416a.l
-  move.w  ($58,A5), $80416c.l
-  move.w  ($5a,A5), $80416e.l
-
- org $00173A
-  move.w  ($60,A5), $80410c.l
-
- org $00174C
-  move.w  ($64,A5), $804110.l
-
- org $00175E
-  move.w  ($68,A5), $804114.l
-
- org $001770
-  move.w  ($6c,A5), $804118.l
-
- org $00178E
-  move.w  ($70,A5), $80411c.l
-
- org $0017AC
-  move.w  ($62,A5), $80410e.l
-
- org $0017C0
-  move.w  ($66,A5), $804112.l
-
- org $0017D4
-  move.w  ($6a,A5), $804116.l
-
- org $0017E8
-  move.w  ($74,A5), $804120.l
-
- org $0017FC
-  move.w  ($6e,A5), $80411a.l
-
- org $001816
-  move.w  ($72,A5), $80411e.l
- 
- ; Clear less work ram
- org $0005CC
-  adda.l  #$ffee, A1
 
 ;=================================
 ; Free space
 ;=================================
- org $0E0000
+ org $246880
 
 hijack_load_stack:
   lea     $ffffe0.l, A7
@@ -311,6 +175,8 @@ hijack_reset_vec:
 
 ;-------------------
 hijack_vsync:
+  movem.l D0-D7/A0-A6, -(A7)
+  lea     $ff8000.l, A5
 
   move.w  (cps2_object_buffer_bit, A5), $8040e0.l ; Set object bank after vblank - bit 0 = Object ram bank swap
   eori.w #$1, (cps2_object_buffer_bit, A5)
@@ -319,7 +185,7 @@ hijack_vsync:
   move.w  $800172.l, ($5e,A5) ; Get system id
 
   move.w  ($4c,A5), $804122.l ; Video control
-  jsr $001684 ; Input and update video control, skip video control
+ ; jsr $001684 ; Input and update video control, skip video control
   ; From 000AD0  
 
   move.w  #$7000, $FFFFF0.l
@@ -404,7 +270,9 @@ hijack_clear_ram
 
 ;-------------------
 main:
-  bsr init_qsound
+  bsr initialize_base_register_vars
+
+;  bsr init_qsound
   bsr fix_palette_brightness
   bsr upload_object_data
   bsr upload_rowscroll_data
@@ -471,7 +339,7 @@ initialize_base_register_vars:
   move.l D0, base_reg_pal_control_ptr
   ; Pointers
   
-  jmp     (A4)
+  rts
 ;-------------------
 
 ;-------------------
@@ -1170,7 +1038,7 @@ draw_object_text:
 draw_string_hook:
   movea.l #.draw_string_hook_continue, A5
 
-  jmp $706
+  jmp $0007C2
 
 .draw_string_hook_continue
   movea.l #$ffff8000, A5 
